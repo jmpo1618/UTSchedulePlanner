@@ -4,6 +4,7 @@ from BeautifulSoup import BeautifulSoup
 import StringIO
 from Course import Course
 
+
 class Planner(object):
 
     def __init__(self, eid, pwd):
@@ -16,6 +17,9 @@ class Planner(object):
         tc.submit()
         print "Logged in successfully."
 
+        self.grid = [[None] * 6] * 48
+        self.course_set = set()
+
     def add_class(self, unique_number):
         class_url = self.url + '/' + unique_number
         tc.go(class_url)
@@ -27,9 +31,11 @@ class Planner(object):
         for row in table.findAll('tr')[1:]:
             columns = row.findAll('td')
             unique = columns[0].string
-            days = columns[1].span.text
+            days = [d.text for d in columns[1].findAll('span')]
+            print days
             hour = columns[2].span.text
             room = columns[3].span.text
             instructor = columns[4].span.text
             new_course = Course(unique, days, hour, room, instructor)
-            print new_course
+            self.course_set.add(new_course)
+            print new_course.parse_days()

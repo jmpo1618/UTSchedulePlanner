@@ -2,9 +2,9 @@ from Planner import Planner
 
 
 if __name__ == "__main__":
-    print 'Insert EID:'
+    print 'Enter EID:'
     eid = raw_input()
-    print 'Insert Password:'
+    print 'Enter Password:'
     pwd = raw_input()
     p = Planner(eid, pwd)
     while True:

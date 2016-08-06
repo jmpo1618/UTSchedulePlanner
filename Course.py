@@ -9,12 +9,24 @@ class Course(object):
         self.room = room
         self.instructor = instructor
 
+    def __hash__(self):
+        return hash(self.unique)
+
+    def __eq__(self, other):
+        return self.unique == other.unique
+
     def parse_days(self):
         result = []
-        for i in range(len(self.days)):
-            if (self.days[i] == 'T' and i < len(self.days) - 1
-               and self.days[i + 1] == 'H'):
-                result.append(self.DAYS['TH'])
-            else:
-                result.append(self.DAYS[self.days[i]])
+        for section in self.days:
+            group = []
+            for i in range(len(section)):
+                if (section[i] == 'T' and i < len(section) - 1
+                   and section[i + 1] == 'H'):
+                    group.append(self.DAYS['TH'])
+                elif not section[i] == 'H':
+                    group.append(self.DAYS[section[i]])
+            result.append(group)
         return result
+
+    def parse_hours(self):
+        pass
