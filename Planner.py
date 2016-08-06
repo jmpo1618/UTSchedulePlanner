@@ -32,10 +32,9 @@ class Planner(object):
             columns = row.findAll('td')
             unique = columns[0].string
             days = [d.text for d in columns[1].findAll('span')]
-            print days
-            hour = columns[2].span.text
-            room = columns[3].span.text
+            hour = [d.text for d in columns[2].findAll('span')]
+            room = [d.text for d in columns[3].findAll('span')]
             instructor = columns[4].span.text
             new_course = Course(unique, days, hour, room, instructor)
             self.course_set.add(new_course)
-            print new_course.parse_days()
+            print new_course.parse_hours()

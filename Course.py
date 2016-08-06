@@ -1,3 +1,6 @@
+import re
+
+
 class Course(object):
 
     DAYS = {'M': 0, 'T': 1, 'W': 2, 'TH': 3, 'F': 4, 'S': 5}
@@ -29,4 +32,17 @@ class Course(object):
         return result
 
     def parse_hours(self):
-        pass
+        result = []
+        for time in self.hours:
+            details = re.split('\s|:|-', time)
+            result.append((self._parse_hours_helper(details[0:3]),
+                           self._parse_hours_helper(details[3:])))
+        return result
+
+    def _parse_hours_helper(self, details):
+        time = int(details[0]) * 2
+        if int(details[1]):
+            time += 1
+        if details[2] == 'a.m.' or details[2] == 'p.m.':
+            time += 24
+        return time
