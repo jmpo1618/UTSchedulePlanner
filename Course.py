@@ -43,6 +43,6 @@ class Course(object):
         time = int(details[0]) * 2
         if int(details[1]):
             time += 1
-        if details[2] == 'a.m.' or details[2] == 'p.m.':
+        if details[2] == 'p.m.':
             time += 24
         return time

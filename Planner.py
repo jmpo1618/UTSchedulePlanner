@@ -1,3 +1,4 @@
+from __future__ import print_function
 import twill
 import twill.commands as tc
 from BeautifulSoup import BeautifulSoup
@@ -15,9 +16,9 @@ class Planner(object):
         tc.fv('1', 'IDToken2', pwd)
         tc.submit()
         tc.submit()
-        print "Logged in successfully."
+        print("Logged in successfully.")
 
-        self.grid = [[None] * 6] * 48
+        self.grid = [[None for c in range(6)] for r in range(48)]
         self.course_set = set()
 
     def add_class(self, unique_number):
@@ -44,11 +45,11 @@ class Planner(object):
                     for h in range(hours_to_add[d][0], hours_to_add[d][1]):
                         for day in days_to_add[d]:
                             self.grid[h][day] = new_course
-                print "Course successfully added."
+                print("Course successfully added.")
 
     def _check_planner_to_add(self, new_course):
         if new_course in self.course_set:
-            print "Class already added."
+            print("Class already added.")
             return False
         else:
             days = new_course.parse_days()
@@ -58,6 +59,36 @@ class Planner(object):
                     for day in days[d]:
                         currently_scheduled = self.grid[h][day]
                         if currently_scheduled is not None:
-                            print "Conflicting with class:" + new_course.unique
+                            print("Conflicting with class:"
+                                  + new_course.unique)
                             return False
             return True
+
+    def print_schedule(self):
+        print('-' * 7 * 7)
+        print('|  H  ||  M  ||  T  ||  W  ||  T  ||  F  ||  S  |')
+        for time in range(16, 37):
+            print('-' * 7 * 7)
+            current_time = time
+            time_to_print = ''
+            if time > 25:
+                current_time -= 24
+            time_to_print = str(time // 2)
+            if not time % 2 == 0:
+                time_to_print = time_to_print + ':30'
+            else:
+                time_to_print = time_to_print + ':00'
+            print("|" + time_to_print + ' ' * (5 - len(time_to_print)), end='')
+            for current_class in self.grid[time]:
+                if current_class:
+                    print('||' + current_class.unique, end='')
+                else:
+                    print('||     ', end='')
+            print('|')
+        print('-' * 7 * 7)
+        self.print_course_info()
+
+    def print_course_info(self):
+        for course in self.course_set:
+            print(course.unique + ':', course.hours, course.days, course.room,
+                  course.instructor)

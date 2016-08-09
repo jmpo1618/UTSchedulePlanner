@@ -14,3 +14,5 @@ if __name__ == "__main__":
             print "Enter unique number to add:"
             unique_number = raw_input()
             p.add_class(unique_number)
+        if cmd == 'print':
+            p.print_schedule()
