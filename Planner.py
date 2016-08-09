@@ -36,5 +36,28 @@ class Planner(object):
             room = [d.text for d in columns[3].findAll('span')]
             instructor = columns[4].span.text
             new_course = Course(unique, days, hour, room, instructor)
-            self.course_set.add(new_course)
-            print new_course.parse_hours()
+            if self._check_planner_to_add(new_course):
+                self.course_set.add(new_course)
+                days_to_add = new_course.parse_days()
+                hours_to_add = new_course.parse_hours()
+                for d in range(len(days_to_add)):
+                    for h in range(hours_to_add[d][0], hours_to_add[d][1]):
+                        for day in days_to_add[d]:
+                            self.grid[h][day] = new_course
+                print "Course successfully added."
+
+    def _check_planner_to_add(self, new_course):
+        if new_course in self.course_set:
+            print "Class already added."
+            return False
+        else:
+            days = new_course.parse_days()
+            hours = new_course.parse_hours()
+            for d in range(len(days)):
+                for h in range(hours[d][0], hours[d][1]):
+                    for day in days[d]:
+                        currently_scheduled = self.grid[h][day]
+                        if currently_scheduled is not None:
+                            print "Conflicting with class:" + new_course.unique
+                            return False
+            return True
